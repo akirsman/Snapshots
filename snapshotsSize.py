@@ -19,10 +19,12 @@ blockSize = 524288
 for index, row in df.iterrows():
     if i == l:
         break
+    date = str(row['StartTime']).split('.',1)[0].split(' ')[0]
+    time = str(row['StartTime']).split('.',1)[0].split(' ')[1]
     if first:
         v_prev = row['VolumeId']
         sid_prev = row['SnapshotId']
-        print(v_prev + "," + 'snap-00000000000000000' + "," + sid_prev + "," + str(row['VolumeSize'] * 1024 * 1024 * 1024))
+        print(date + ',' + time + ',' + v_prev + "," + 'snap-00000000000000000' + "," + sid_prev + "," + str(row['VolumeSize'] * 1024 * 1024 * 1024))
         first = False
         i = i + 1
         continue
@@ -30,9 +32,9 @@ for index, row in df.iterrows():
     sid = row['SnapshotId']
     if v == v_prev:
         changed = len(ebs.list_changed_blocks(FirstSnapshotId = sid_prev,SecondSnapshotId = sid)['ChangedBlocks'])
-        print(v + "," + sid_prev + "," + sid + "," + str(changed * blockSize))
+        print(date + ',' + time + ',' + v + "," + sid_prev + "," + sid + "," + str(changed * blockSize))
     else:
-        print(v + "," + 'snap-00000000000000000' + "," + sid + "," + str(row['VolumeSize'] * 1024 * 1024 * 1024))
+        print(date + ',' + time + ',' + v + "," + 'snap-00000000000000000' + "," + sid + "," + str(row['VolumeSize'] * 1024 * 1024 * 1024))
     v_prev = v
     sid_prev = sid
     i = i + 1
